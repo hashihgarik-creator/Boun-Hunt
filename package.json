@@ -1,0 +1,47 @@
+{
+  "name": "bone-hunt",
+  "version": "1.0.0",
+  "description": "Bone Hunt — пиратский раннер",
+  "main": "main.js",
+  "author": "Артём Сизов",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:dir": "electron-builder --win --dir"
+  },
+  "devDependencies": {
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.artemsizov.bonehunt",
+    "productName": "Bone Hunt",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "game.js",
+      "style.css",
+      "images/**/*",
+      "sounds/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

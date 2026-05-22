@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bone Hunt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=9">
+</head>
+<body>
+  <main class="game-wrapper">
+    <div class="canvas-stage">
+      <div class="game-container">
+        <canvas
+          id="gameCanvas"
+          width="800"
+          height="450"
+          tabindex="0"
+          aria-label="Игровое поле Bone Hunt"
+        ></canvas>
+        <div id="gameHud" class="game-hud hidden" aria-hidden="true">
+          <p class="game-hud__bones">
+            <img src="images/bones_icon.png" class="bones-ui-icon" alt="">
+            Bones: <span id="hudBones">0</span>
+          </p>
+          <p class="game-hud__hp">
+            HP: <span id="hudHp">3</span> / <span id="hudMaxHp">3</span>
+          </p>
+        </div>
+        <div class="dev-controls">
+          <button
+            type="button"
+            id="skip-sea2-btn"
+            class="dev-btn hidden"
+            title="Сразу во второе море (без босса и препятствий)"
+          >🌊 2-е море</button>
+          <button
+            type="button"
+            id="skip-kraken-btn"
+            class="dev-btn hidden"
+            title="Сразу к боссу Кракену во 2-м море"
+          >🐙 Кракен</button>
+          <button
+            type="button"
+            id="reset-game-btn"
+            class="dev-btn"
+            title="Полный сброс прогресса и сохранений"
+          >🔄 Сброс</button>
+        </div>
+      </div>
+
+      <div id="mainMenu" class="menu-overlay" aria-hidden="false">
+        <div class="menu-panel">
+          <h1 class="pixel-title">Bone Hunt</h1>
+          <div class="menu-stats">
+            <p>Накоплено костей: <span id="totalBones">0</span></p>
+            <p>Рекорд: <span id="maxBonesDisplay">0</span></p>
+          </div>
+          <nav class="menu-nav">
+            <button type="button" id="playBtn" class="menu-btn menu-btn--graphic" aria-label="Играть">
+              <img src="images/btn_play.png" alt="" class="menu-btn__img" decoding="async">
+            </button>
+            <button type="button" id="shopBtn" class="menu-btn menu-btn--graphic" aria-label="Магазин">
+              <img src="images/btn_shop.png" alt="" class="menu-btn__img" decoding="async">
+            </button>
+            <button type="button" id="recordsBtn" class="menu-btn menu-btn--graphic" aria-label="Рекорды">
+              <img src="images/btn_records.png" alt="" class="menu-btn__img" decoding="async">
+            </button>
+            <button type="button" id="developerBtn" class="menu-btn menu-btn--muted">Разработчик</button>
+          </nav>
+        </div>
+      </div>
+
+      <div id="shopMenu" class="menu-overlay hidden" aria-hidden="true">
+        <div class="menu-panel menu-panel--wide">
+          <h2 class="menu-heading">Магазин кораблей</h2>
+          <p class="menu-sub">
+            <img src="images/bones_icon.png" class="bones-ui-icon bones-ui-icon--inline" alt="">
+            Кости: <span id="shopBones">0</span>
+          </p>
+          <div id="shopList" class="shop-list"></div>
+          <button type="button" class="menu-btn menu-btn--back" data-back="main">Назад</button>
+        </div>
+      </div>
+
+      <div id="recordsMenu" class="menu-overlay hidden" aria-hidden="true">
+        <div class="menu-panel">
+          <h2 class="menu-heading">Рекорды</h2>
+          <div class="records-block">
+            <p>Лучший заезд</p>
+            <p class="records-value" id="recordsMaxBones">0</p>
+            <p class="records-label">костей</p>
+          </div>
+          <div class="records-block records-block--small">
+            <p>Всего накоплено</p>
+            <p class="records-value records-value--bones" id="recordsTotalBones">0</p>
+          </div>
+          <button type="button" class="menu-btn menu-btn--back" data-back="main">Назад</button>
+        </div>
+      </div>
+
+      <div id="developerMenu" class="menu-overlay hidden" aria-hidden="true">
+        <div class="menu-panel">
+          <h2 class="menu-heading">Разработчик</h2>
+          <p class="menu-sub">Введите код доступа в диалоге</p>
+          <button type="button" id="devAccessBtn" class="menu-btn">Ввести код</button>
+          <button type="button" class="menu-btn menu-btn--back" data-back="main">Назад</button>
+        </div>
+      </div>
+
+      <div id="secretMenu" class="menu-overlay hidden" aria-hidden="true">
+        <div class="menu-panel menu-panel--secret">
+          <h2 class="menu-heading">Секретное меню</h2>
+          <p class="menu-sub">Доступ разрешён — читы ниже</p>
+          <button type="button" id="devAuthorsBtn" class="menu-btn menu-btn--secret">Авторы</button>
+          <button type="button" id="devQuickAccessBtn" class="menu-btn menu-btn--secret">Быстрый доступ</button>
+          <button type="button" id="secretBonesBtn" class="menu-btn menu-btn--secret">+1 000 000 костей</button>
+          <button type="button" id="secretHpBtn" class="menu-btn menu-btn--secret">+1000 HP</button>
+          <button type="button" class="menu-btn menu-btn--back" data-back="main">Назад</button>
+        </div>
+      </div>
+
+      <div id="gameOverOverlay" class="game-over hidden" aria-hidden="true">
+        <div class="game-over__panel">
+          <p class="game-over__eyebrow">Game Over</p>
+          <h2 class="game-over__title">Корабль потоплен!</h2>
+          <p class="game-over__bones">
+            <img src="images/bones_icon.png" class="bones-ui-icon bones-ui-icon--inline" alt="">
+            За раунд: <span id="finalBones">0</span>
+          </p>
+          <button type="button" id="menuBtn" class="menu-btn">В главное меню</button>
+        </div>
+      </div>
+
+      <div id="victoryOverlay" class="game-over game-over--victory hidden" aria-hidden="true">
+        <div class="game-over__panel game-over__panel--victory">
+          <p class="game-over__eyebrow">Победа</p>
+          <h2 class="game-over__title">Кракен повержен!</h2>
+          <p class="game-over__sub">Багровые воды покорены — игра пройдена.</p>
+          <p class="game-over__bones">
+            <img src="images/bones_icon.png" class="bones-ui-icon bones-ui-icon--inline" alt="">
+            За раунд: <span id="victoryBones">0</span>
+          </p>
+          <button type="button" id="victoryMenuBtn" class="menu-btn">В главное меню</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="game-hint">WASD / стрелки — движение &nbsp;·&nbsp; Пробел — выстрел</p>
+  </main>
+
+  <div id="authorsOverlay" class="authors-overlay hidden" aria-hidden="true" role="dialog" aria-label="Авторы">
+    <p class="authors-overlay__text">
+      Игру сделал Артём Сизов<br>
+      при звуковой поддержке Василия Ясанкина
+    </p>
+    <p class="authors-overlay__hint">Нажмите, чтобы закрыть</p>
+  </div>
+  <script src="game.js?v=21"></script>
+</body>
+</html>
